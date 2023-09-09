@@ -1,0 +1,119 @@
+package service
+
+import (
+	"fmt"
+	"log"
+	"main/internal/repo"
+	"main/internal/repo/structs"
+	"main/internal/store"
+	"sync"
+	"time"
+)
+
+var Serv *Service
+
+type Service struct {
+}
+
+func Init() error {
+	Serv = &Service{}
+	return nil
+}
+
+func Start() error {
+	fmt.Println("Parser successfully started")
+
+	var errorOccurred bool
+
+	location, err := time.LoadLocation("Europe/Moscow")
+	if err != nil {
+		return fmt.Errorf("error occurred while load `Europe/Moscow` location: %s", err.Error())
+	}
+
+	for {
+		if errorOccurred {
+			errorOccurred = false
+			time.Sleep(1 * time.Hour)
+		}
+		log.Println("Starting update database...")
+
+		timetableFile, err := store.GetScheduleFromApi()
+		if err != nil {
+			log.Printf("Aborting database update, an error was occurred: %s\n", err.Error())
+			errorOccurred = true
+			continue
+		}
+
+		parseWG := &sync.WaitGroup{}
+		parseWG.Add(3)
+
+		var groups []structs.Timetable
+		go func() {
+			defer parseWG.Done()
+			groups = parseGroups(timetableFile)
+		}()
+
+		var teacherNames structs.TeachersNames
+		go func() {
+			defer parseWG.Done()
+			teacherNames = parseTeachersNames(timetableFile)
+		}()
+
+		var teachers []structs.Timetable
+		go func() {
+			defer parseWG.Done()
+			teachers = parseTeachers(timetableFile)
+		}()
+
+		parseWG.Wait()
+
+		repoWG := &sync.WaitGroup{}
+		repoWG.Add(3)
+
+		var (
+			groupWriteError         error
+			teachersWriteError      error
+			teachersNamesWriteError error
+		)
+		go func() {
+			defer repoWG.Done()
+			if err := repo.RewriteTimetables(groups, repo.GroupsNamespace); err != nil {
+				groupWriteError = fmt.Errorf("faild to rewrite groups in '%s' namespace, error was occurred: %s", repo.GroupsNamespace, err.Error())
+			}
+		}()
+
+		go func() {
+			defer repoWG.Done()
+			if err := repo.RewriteTeachersNames(teacherNames); err != nil {
+				teachersNamesWriteError = fmt.Errorf("faild to rewrite teachers names, error was occurred: %s", err.Error())
+			}
+		}()
+
+		go func() {
+			defer repoWG.Done()
+			if err := repo.RewriteTimetables(teachers, repo.TeachersNamespace); err != nil {
+				teachersWriteError = fmt.Errorf("faild to rewrite teachers in '%s' namespace, error was occurred: %s", repo.TeachersNamespace, err.Error())
+			}
+		}()
+
+		repoWG.Wait()
+
+		if groupWriteError != nil {
+			return groupWriteError
+		}
+
+		if teachersNamesWriteError != nil {
+			return teachersNamesWriteError
+		}
+
+		if teachersWriteError != nil {
+			return teachersWriteError
+		}
+
+		log.Println("Database successfully updated")
+
+		//my hands are in hell
+		for time.Now().In(location).Format(time.TimeOnly) != "00:07:00" {
+		}
+	}
+}
