@@ -10,13 +10,13 @@ import (
 	"time"
 )
 
-var Serv *Service
+var s *Service
 
 type Service struct {
 }
 
 func Init() error {
-	Serv = &Service{}
+	s = &Service{}
 	return nil
 }
 
