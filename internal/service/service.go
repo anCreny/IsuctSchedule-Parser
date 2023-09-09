@@ -25,11 +25,6 @@ func Start() error {
 
 	var errorOccurred bool
 
-	location, err := time.LoadLocation("Europe/Moscow")
-	if err != nil {
-		return fmt.Errorf("error occurred while load `Europe/Moscow` location: %s", err.Error())
-	}
-
 	for {
 		if errorOccurred {
 			errorOccurred = false
@@ -113,7 +108,7 @@ func Start() error {
 		log.Println("Database successfully updated")
 
 		//my hands are in hell
-		for time.Now().In(location).Format(time.TimeOnly) != "00:07:00" {
+		for time.Now().Format(time.TimeOnly) != "00:04:00" {
 		}
 	}
 }
