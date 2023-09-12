@@ -9,16 +9,10 @@ import (
 	"main/internal/repo/structs"
 )
 
-const (
-	GroupsNamespace   = "groups"
-	TeachersNamespace = "teachers"
-)
-
 var r *Repo
 
 type Repo struct {
-	Rx         *reindexer.Reindexer
-	Namespaces structs.Namespaces
+	Rx *reindexer.Reindexer
 }
 
 func Init() error {
@@ -33,21 +27,17 @@ func Init() error {
 	connectionPath := fmt.Sprintf("cproto://%v%v:%v/%v", userPath, cfg.Host, cfg.Port, cfg.Database)
 	r.Rx = reindexer.NewReindex(connectionPath, reindexer.WithCreateDBIfMissing())
 
-	if err := r.Rx.OpenNamespace("teachers", reindexer.DefaultNamespaceOptions(), structs.Timetable{}); err != nil {
+	if err := r.Rx.OpenNamespace(cfg.Namespaces.Teachers, reindexer.DefaultNamespaceOptions(), structs.Timetable{}); err != nil {
 		return fmt.Errorf("error occurred while openning teachers namespace: %s", err.Error())
 	}
 
-	if err := r.Rx.OpenNamespace("groups", reindexer.DefaultNamespaceOptions(), structs.Timetable{}); err != nil {
+	if err := r.Rx.OpenNamespace(cfg.Namespaces.Groups, reindexer.DefaultNamespaceOptions(), structs.Timetable{}); err != nil {
 		return fmt.Errorf("error occured while openning groups namespace:, %s", err.Error())
 	}
 
-	if err := r.Rx.OpenNamespace("teachers_names", reindexer.DefaultNamespaceOptions(), structs.TeachersNames{}); err != nil {
+	if err := r.Rx.OpenNamespace(cfg.Namespaces.Names, reindexer.DefaultNamespaceOptions(), structs.TeachersNames{}); err != nil {
 		return fmt.Errorf("error occurred while openning teachers_names namespace:, %s", err.Error())
 	}
-
-	r.Namespaces.Groups = "groups"
-	r.Namespaces.Teachers = "teachers"
-	r.Namespaces.TeachersNames = "teachers_names"
 
 	return nil
 }
@@ -74,7 +64,7 @@ func RewriteTimetables(timetables []structs.Timetable, namespace string) error {
 }
 
 func RewriteTeachersNames(names structs.TeachersNames) error {
-	namespace := "teachers_names"
+	namespace := config.Cfg.RxCfg.Namespaces.Names
 	log.Printf("Starting upsert to '%s' namespace", namespace)
 
 	err := r.Rx.Upsert(namespace, names)

@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"log"
+	"main/config"
 	"main/internal/repo"
 	"main/internal/repo/structs"
 	"main/internal/store"
@@ -72,8 +73,8 @@ func Start() error {
 		)
 		go func() {
 			defer repoWG.Done()
-			if err := repo.RewriteTimetables(groups, repo.GroupsNamespace); err != nil {
-				groupWriteError = fmt.Errorf("faild to rewrite groups in '%s' namespace, error was occurred: %s", repo.GroupsNamespace, err.Error())
+			if err := repo.RewriteTimetables(groups, config.Cfg.RxCfg.Namespaces.Groups); err != nil {
+				groupWriteError = fmt.Errorf("faild to rewrite groups in '%s' namespace, error was occurred: %s", config.Cfg.RxCfg.Namespaces.Groups, err.Error())
 			}
 		}()
 
@@ -86,8 +87,8 @@ func Start() error {
 
 		go func() {
 			defer repoWG.Done()
-			if err := repo.RewriteTimetables(teachers, repo.TeachersNamespace); err != nil {
-				teachersWriteError = fmt.Errorf("faild to rewrite teachers in '%s' namespace, error was occurred: %s", repo.TeachersNamespace, err.Error())
+			if err := repo.RewriteTimetables(teachers, config.Cfg.RxCfg.Namespaces.Teachers); err != nil {
+				teachersWriteError = fmt.Errorf("faild to rewrite teachers in '%s' namespace, error was occurred: %s", config.Cfg.RxCfg.Namespaces.Teachers, err.Error())
 			}
 		}()
 
