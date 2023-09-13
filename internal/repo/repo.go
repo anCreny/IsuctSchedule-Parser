@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/restream/reindexer/v3"
 	_ "github.com/restream/reindexer/v3/bindings/cproto"
-	"log"
 	"main/config"
 	"main/internal/repo/structs"
+	"main/logger"
 )
 
 var r *Repo
@@ -43,7 +43,7 @@ func Init() error {
 }
 
 func RewriteTimetables(timetables []structs.Timetable, namespace string) error {
-	log.Printf("Starting transaction to '%s' namespace", namespace)
+	logger.Log.Info().Any("Namespace", namespace).Msg("Starting transaction...")
 	tx, err := r.Rx.BeginTx(namespace)
 	if err != nil {
 		return fmt.Errorf("an error occurred while begin transaction on '%s' namespace: %s", namespace, err.Error())
@@ -59,19 +59,19 @@ func RewriteTimetables(timetables []structs.Timetable, namespace string) error {
 	if err = tx.Commit(); err != nil {
 		return fmt.Errorf("an error occurred while commiting the transaction: %s", err.Error())
 	}
-	log.Printf("Successfully write all data to '%s' namespace", namespace)
+	logger.Log.Info().Any("Namespace", namespace).Msg("Successfully write all data")
 	return nil
 }
 
 func RewriteTeachersNames(names structs.TeachersNames) error {
 	namespace := config.Cfg.RxCfg.Namespaces.Names
-	log.Printf("Starting upsert to '%s' namespace", namespace)
+	logger.Log.Info().Any("Namespace", namespace).Msg("Starting upsert...")
 
 	err := r.Rx.Upsert(namespace, names)
 	if err != nil {
 		return fmt.Errorf("an error was occurred while upsert %v to '%s' namespace: %s", names, namespace, err.Error())
 	}
 
-	log.Printf("Successfully write all data to '%s' namespace", namespace)
+	logger.Log.Info().Any("Namespace", namespace).Msg("Successfully write all data")
 	return nil
 }

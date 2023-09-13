@@ -1,9 +1,9 @@
 package service
 
 import (
-	"log"
 	"main/internal/repo/structs"
 	"main/internal/store"
+	"main/logger"
 )
 
 func parseGroups(file store.ScheduleFile) []structs.Timetable {
@@ -28,7 +28,7 @@ func parseGroups(file store.ScheduleFile) []structs.Timetable {
 				tempDay := structs.Day{}
 
 				tempDay.Weekday = weekDay
-				tempDay.Week = week
+				tempDay.Week = 3 - week
 
 				lessons := make([]structs.Lesson, 0)
 				for _, lesson := range group.Lessons {
@@ -74,7 +74,7 @@ func parseGroups(file store.ScheduleFile) []structs.Timetable {
 		ans = append(ans, tempTimetable)
 	}
 
-	log.Println("Groups successfully parsed")
+	logger.Log.Info().Msg("Groups successfully parsed")
 	return ans
 }
 
@@ -94,7 +94,7 @@ func parseTeachersNames(file store.ScheduleFile) structs.TeachersNames {
 		}
 	}
 
-	log.Println("Teachers names successfully parsed")
+	logger.Log.Info().Msg("Teachers names successfully parsed")
 	return teachersNames
 }
 
@@ -167,12 +167,15 @@ func parseTeachers(file store.ScheduleFile) []structs.Timetable {
 			days = append(days, day)
 		}
 
+		for _, day := range days {
+			day.Week = 3 - day.Week
+		}
+
 		tempTimetable.Days = append(tempTimetable.Days, days...)
 
 		ans = append(ans, tempTimetable)
 	}
 
-	log.Println("Teachers successfully parsed")
-
+	logger.Log.Info().Msg("Teachers successfully parsed")
 	return ans
 }

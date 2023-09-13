@@ -2,11 +2,11 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"main/config"
 	"main/internal/repo"
 	"main/internal/repo/structs"
 	"main/internal/store"
+	"main/logger"
 	"sync"
 	"time"
 )
@@ -31,11 +31,11 @@ func Start() error {
 			errorOccurred = false
 			time.Sleep(1 * time.Hour)
 		}
-		log.Println("Starting update database...")
+		logger.Log.Info().Msg("Starting update database...")
 
 		timetableFile, err := store.GetScheduleFromApi()
 		if err != nil {
-			log.Printf("Aborting database update, an error was occurred: %s\n", err.Error())
+			logger.Log.Error().Err(err).Time("Next try", time.Now().Add(4*time.Hour)).Msg("Aborting database update")
 			errorOccurred = true
 			continue
 		}
@@ -106,10 +106,10 @@ func Start() error {
 			return teachersWriteError
 		}
 
-		log.Println("Database successfully updated")
+		logger.Log.Info().Msg("Database successfully updated!")
 
 		//my hands are in hell
-		for time.Now().Format(time.TimeOnly) != "00:04:00" {
+		for time.Now().Format(time.TimeOnly) != "00:09:00" {
 		}
 	}
 }

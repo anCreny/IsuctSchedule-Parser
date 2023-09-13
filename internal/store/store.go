@@ -3,8 +3,8 @@ package store
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"main/config"
+	"main/logger"
 	"net/http"
 )
 
@@ -20,7 +20,7 @@ func Init() error {
 }
 
 func GetScheduleFromApi() (ScheduleFile, error) {
-	log.Printf("Send GET request to %s\n", s.Url)
+	logger.Log.Info().Any("URL", s.Url).Msg("Sending GET request...")
 	resp, err := http.Get(s.Url)
 	if err != nil {
 		return ScheduleFile{}, fmt.Errorf("error with response from %s: %s", s.Url, err.Error())
@@ -35,6 +35,6 @@ func GetScheduleFromApi() (ScheduleFile, error) {
 		return ScheduleFile{}, fmt.Errorf("error with unmarshal: %s", err.Error())
 	}
 
-	log.Printf("Catch a result from GET request to %s\n", s.Url)
+	logger.Log.Info().Any("URL", s.Url).Msg("Request was successfully responded")
 	return ans, nil
 }

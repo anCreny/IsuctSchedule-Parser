@@ -1,8 +1,8 @@
 package structs
 
 type TeachersNames struct {
-	FakePk int   `reindex:"fake_PK,,pk"`
-	Names  Names `reindex:"names"`
+	FakePk int   `reindex:"fake_PK,,pk" json:"-"`
+	Names  Names `reindex:"names" json:"names"`
 }
 
 type Names []string

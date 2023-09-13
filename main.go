@@ -1,66 +1,50 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"main/config"
 	"main/internal/repo"
 	"main/internal/service"
 	"main/internal/store"
+	"main/logger"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
 func main() {
-	fmt.Println("Parser start initialization...")
+	logger.Init()
 
-	// init graceful shutdown
-	defer func() {
-		fmt.Println("\nClosing microservice gracefully...")
-		if err := recover(); err != nil {
-			log.Println("Panic:", err)
-		}
-	}()
+	logger.Log.Info().Msg("Parser start initialization...")
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGCONT, syscall.SIGQUIT)
 
 	//init config
 	if err := config.Init(); err != nil {
-		log.Println("Couldn't init config, an error was occurred:", err)
+		logger.Log.Error().Err(err).Msg("Couldn't init config")
 		return
 	}
 
 	//init repository
 	if err := repo.Init(); err != nil {
-		log.Println("Couldn't init repository, an error was occurred:", err)
+		logger.Log.Error().Err(err).Msg("Couldn't init repository")
 		return
 	}
 
 	//init store
 	if err := store.Init(); err != nil {
-		log.Println("Couldn't init store, an error was occurred:", err)
+		logger.Log.Error().Err(err).Msg("Couldn't init store")
 	}
 
 	//init service
 	if err := service.Init(); err != nil {
-		log.Println("Couldn't init service, an error was occurred:", err)
+		logger.Log.Error().Err(err).Msg("Couldn't init service")
 		return
 	}
 
-	// start service
-	errCh := make(chan error)
-
-	go func() {
-		err := service.Start()
-		errCh <- err
-	}()
-
-	select {
-	case err := <-errCh:
-		log.Println("Service was stopped with an error:", err)
-		return
-	case <-sigs:
+	if err := service.Start(); err != nil {
+		logger.Log.Error().Err(err).Msg("Parser stopped with the error")
 	}
+
+	logger.Log.Info().Msg("Parser stopped")
 }
