@@ -42,6 +42,8 @@ github.com/anCreny/IsuctSchedule-Packages v1.0.2 h1:WWGlWhvX0K6TC936UVXvNnJjSdIh
 github.com/anCreny/IsuctSchedule-Packages v1.0.2/go.mod h1:EZWWwglPrJRzm84Ts8e3yc7BhhnTpaV4izqhMPJwa8o=
 github.com/anCreny/IsuctSchedule-Packages v1.0.3 h1:WBEq8zSAzOhE2kv8N2IPR9qyyjAnxBDrn126segJ0Ds=
 github.com/anCreny/IsuctSchedule-Packages v1.0.3/go.mod h1:EZWWwglPrJRzm84Ts8e3yc7BhhnTpaV4izqhMPJwa8o=
+github.com/anCreny/IsuctSchedule-Packages v1.0.4 h1:V23/L5MWG8AIx7O+S3mSk9UCWjpJL1R/aWN0PnnvuJk=
+github.com/anCreny/IsuctSchedule-Packages v1.0.4/go.mod h1:EZWWwglPrJRzm84Ts8e3yc7BhhnTpaV4izqhMPJwa8o=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=

@@ -3,7 +3,7 @@ module main
 go 1.21.0
 
 require (
-	github.com/anCreny/IsuctSchedule-Packages v1.0.3
+	github.com/anCreny/IsuctSchedule-Packages v1.0.4
 	github.com/restream/reindexer/v3 v3.18.0
 )
 
