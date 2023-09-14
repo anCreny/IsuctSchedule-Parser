@@ -22,7 +22,7 @@ func Init() error {
 }
 
 func Start() error {
-	fmt.Println("Parser successfully started")
+	logger.Log.Info().Msg("Parser successfully started")
 
 	var errorOccurred bool
 
