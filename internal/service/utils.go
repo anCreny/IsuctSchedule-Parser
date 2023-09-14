@@ -1,9 +1,9 @@
 package service
 
 import (
-	"main/internal/repo/structs"
+	"github.com/anCreny/IsuctSchedule-Packages/logger"
+	"github.com/anCreny/IsuctSchedule-Packages/structs"
 	"main/internal/store"
-	"main/logger"
 )
 
 func parseGroups(file store.ScheduleFile) []structs.Timetable {

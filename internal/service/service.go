@@ -2,11 +2,11 @@ package service
 
 import (
 	"fmt"
+	"github.com/anCreny/IsuctSchedule-Packages/logger"
+	"github.com/anCreny/IsuctSchedule-Packages/structs"
 	"main/config"
 	"main/internal/repo"
-	"main/internal/repo/structs"
 	"main/internal/store"
-	"main/logger"
 	"sync"
 	"time"
 )

@@ -2,11 +2,11 @@ package repo
 
 import (
 	"fmt"
+	"github.com/anCreny/IsuctSchedule-Packages/logger"
+	"github.com/anCreny/IsuctSchedule-Packages/structs"
 	"github.com/restream/reindexer/v3"
 	_ "github.com/restream/reindexer/v3/bindings/cproto"
 	"main/config"
-	"main/internal/repo/structs"
-	"main/logger"
 )
 
 var r *Repo

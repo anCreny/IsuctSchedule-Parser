@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/anCreny/IsuctSchedule-Packages/logger"
 	"main/config"
 	"main/internal/repo"
 	"main/internal/service"
 	"main/internal/store"
-	"main/logger"
 	"os"
 	"os/signal"
 	"syscall"
@@ -44,6 +44,7 @@ func main() {
 
 	if err := service.Start(); err != nil {
 		logger.Log.Error().Err(err).Msg("Parser stopped with the error")
+		return
 	}
 
 	logger.Log.Info().Msg("Parser stopped")

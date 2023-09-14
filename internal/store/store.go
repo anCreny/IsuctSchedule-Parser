@@ -3,8 +3,8 @@ package store
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/anCreny/IsuctSchedule-Packages/logger"
 	"main/config"
-	"main/logger"
 	"net/http"
 )
 
